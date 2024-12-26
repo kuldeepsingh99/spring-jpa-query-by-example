@@ -1,1 +1,1 @@
-# spring-jpa-query-by-example
+# Spring Data JPA Query by Example
