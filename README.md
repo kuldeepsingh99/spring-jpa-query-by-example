@@ -55,3 +55,40 @@ probe.setLastName("doe");   // Matches "Doe", "DOE", etc.
 Example<Customer> example = Example.of(probe, matcher);
 List<Customer> result = customerRepository.findAll(example);
 ```
+
+## Example Without Query By Example
+
+To query customers dynamically (e.g., by name, email, and age), you would typically write custom queries or method names in your repository.
+
+**Repository**
+```
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    List<Customer> findByNameAndEmailAndAge(String name, String email, Integer age);
+}
+```
+
+**Service**
+```
+@Service
+public class CustomerService {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    public List<Customer> findCustomers(String name, String email, Integer age) {
+        // If all parameters must be non-null
+        if (name == null || email == null || age == null) {
+            throw new IllegalArgumentException("All parameters are required!");
+        }
+
+        return customerRepository.findByNameAndEmailAndAge(name, email, age);
+    }
+}
+```
+### Problems with This Approach
+- **Hardcoded Query Logic**: Every combination of search criteria requires a new repository method or a custom query.
+- **Scalability Issues**: Adding a new filter means updating the repository and service logic.
+- **Boilerplate Code**: Manual null-checking and query-building increase code verbosity.
+
+
+
